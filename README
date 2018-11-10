@@ -1,10 +1,42 @@
-Holophrasm: a purely neural automated theorem prover for Metamath
-https://arxiv.org/abs/1608.02644
+# Holophrasm: a purely neural automated theorem prover for Metamath
 
-To use the program, start by downloading the release, which includes the binary files for the language model and the trained model weights.  Then, from the root directory, using python 2.7, run
+Holophrasm is an automated theorem prover for the Metamath formal
+mathematics verification system that uses deep learning.
+It was originally developed by Daniel Whalen.
 
-python run_script_ordered.py
-python write_all_proofs.py
+For technical details, see:
+"Holophrasm: a purely neural automated theorem prover for higher-order logic"
+by Daniel Whalen, 10 Aug 2016, https://arxiv.org/abs/1608.02644
+
+This version was modified by David A. Wheeler.
+
+## Installation
+
+To use the program, start by downloading the release, which includes the binary files for the language model and the trained model weights.
+
+First, install system packages.  This must include Python2 (if not already installed), including its "development" packages (typically called python2-dev or python2-devel, though it might say "python" instead of "python2").  You must also install a working C compiler such as gcc (this should automatically happen when you install the python-dev/python-devel package).
+
+If you're using Cygwin, you need to separately install pip (the Python2 package manager) by running:
+
+~~~~
+python2 -m ensurepip
+pip2 install --upgrade pip
+~~~~
+
+Now install the Python language dependencies:
+
+~~~~
+pip2 install numpy
+~~~~
+
+## Usage
+
+Then, from the root directory, using python 2.7, run
+
+~~~~
+python2 run_script_ordered.py
+python2 write_all_proofs.py
+~~~~
 
 run_script_ordered.py will attempt to search for proofs for all the Metamath propositions in the test set, starting with the (expected) easiest proofs first.  Reasonable parameters for running the script are:
 timeout: 5
@@ -15,13 +47,15 @@ Proofs are saved to searcher/proofs as soon as they are found.  The proofs that 
 
 write_all_proofs.py will generate a modified_set.mm module file, which consists of the proofs from set.mm, with the found proofs replaced.  This can then be fed into Metamath and verified using the commands
 
+~~~~
 READ modified_set.mm
 VERIFY PROOF *
+~~~~
 
 There's a known bug involving outputting the proofs that assigns the same additional dummy variable to multiple set variables, breaking the disjointness condition.
 I think this is purely a problem with the proof writing, but I'm not confident, so I've excluded these proofs from my count of working proofs anyway.
 
-#############################################
+## Training
 
 If you want to train from scratch, you can do the following.  I recommend having at least 64GB of RAM.
 
