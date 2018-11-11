@@ -3,18 +3,28 @@
 Holophrasm is an automated theorem prover for the Metamath formal
 mathematics verification system that uses deep learning.
 It was originally developed by Daniel Whalen.
+This version was modified by David A. Wheeler.
 
 For technical details, see:
 "Holophrasm: a purely neural automated theorem prover for higher-order logic"
 by Daniel Whalen, 10 Aug 2016, https://arxiv.org/abs/1608.02644
 
-This version was modified by David A. Wheeler.
+In the longer term we hope to make the whole process of installing
+and using this program easier, including having a front-end command line
+program named "holophrasm" that makes it all work together.
+That isn't here yet, so here document how to get things working right now.
 
-## Installation
+## Installation: Program
 
-To use the program, start by downloading the release, which includes the binary files for the language model and the trained model weights.
+You need to get the program itself (reading this README), and
+change into that directory:
 
-First, install system packages.  This must include Python2 (if not already installed), including its "development" packages (typically called python2-dev or python2-devel, though it might say "python" instead of "python2").  You must also install a working C compiler such as gcc (this should automatically happen when you install the python-dev/python-devel package).
+~~~~
+git clone https://github.com/david-a-wheeler/holophrasm
+cd holophrasm
+~~~~
+
+Install system packages.  This must include Python2 (if not already installed), including its "development" packages (typically called python2-dev or python2-devel, though it might say "python" instead of "python2").  You must also install a working C compiler such as gcc (this should automatically happen when you install the python-dev/python-devel package).
 
 If you're using Cygwin, you need to separately install pip (the Python2 package manager) by running:
 
@@ -23,11 +33,48 @@ python2 -m ensurepip
 pip2 install --upgrade pip
 ~~~~
 
-Now install the Python language dependencies:
+Now install the Python language dependencies (NumPy and iPython):
 
 ~~~~
-pip2 install numpy
+pip2 install numpy ipython
 ~~~~
+
+## Installation: Data files
+
+To use the program, we also need to download the original release by
+Daniel Whalen, which includes the binary files for the language model
+and the trained model weights.  We'll use wget here, but
+anything that downloads holophrasm.zip will do:
+
+~~~~
+wget https://github.com/dwhalen/holophrasm/releases/download/v1.0/holophrasm.zip
+~~~~
+
+*BEWARE* - if you unzip this, it will unzip to a "holophrasm" directory
+and you don't want to overwrite the holophrasm directory you just
+got from GitHub.  The easy solution is to make sure you are ALREADY
+in the holophrasm directory, and put the .zip file INSIDE it
+(as we suggest).  Now unzip it, and rename the directory to
+prevent confusion (on Windows use "rename" instead of "mv", as well
+as whatever unzip program you want):
+
+~~~~
+unzip holophrasm.zip
+mv holophrasm holophrasm-release
+~~~~
+
+Now copy the the binary files for the language model
+and the trained model weights:
+
+# Download "release" file and copy its big files:
+mv holophrasm-release/lm .
+mv holophrasm-release/searcher/gen.weights searcher/
+mv holophrasm-release/searcher/payout.weights searcher/
+mv holophrasm-release/searcher/pred.weights searcher/
+mv holophrasm-release/searcher/pred_database searcher/
+mkdir searcher/proofs
+
+Note that these data files total about 1134 MB (base-10).
 
 ## Usage
 
