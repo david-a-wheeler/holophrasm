@@ -33,6 +33,12 @@ python2 -m ensurepip
 pip2 install --upgrade pip
 ~~~~
 
+If you're using Debian/Ubuntu or similar, you need to separately install pip by running:
+
+~~~~
+sudo apt install python-pip
+~~~~
+
 Now install the Python language dependencies (NumPy and iPython):
 
 ~~~~
