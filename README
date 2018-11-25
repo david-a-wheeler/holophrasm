@@ -125,6 +125,11 @@ export VECLIB_MAXIMUM_THREADS=1
 #########
 
 Step 1: train gen and pred
+
+Each of these scripts run indefinitely, trying to find a better
+training result for gen and pred respectively.  So run each for a while
+and then halt their execution.
+
 #########
 python script_gen.py
 python script_pred.py
@@ -133,11 +138,12 @@ python script_pred.py
 Step 2: set up the files for the nn interface
 #########
 mkdir searcher
-cp weights/gen/train.parameters searcher/gen.parameters
-cp weights/gen/train.weights searcher/gen.weights
-cp weights/pred/train.parameters searcher/pred.parameters
-cp weights/pred/train.weights searcher/pred.weights
+cp weights/gen2000/train.parameters searcher/gen.parameters
+cp weights/gen2000/train.weights searcher/gen.weights
+cp weights/pred2000/train.parameters searcher/pred.parameters
+cp weights/pred2000/train.weights searcher/pred.weights
 #########
+
 NOTE: this will fail because the searcher currently expects payout to
 already exist.  Fix that.
 
@@ -147,11 +153,15 @@ python save_language_model.py
 #########
 
 Step 4: construct the payout data set and train the payout network
+
+Note: The last two steps are from the original instructions, but it's
+not clear they should be done.
+
 #########
 python generate_payout_data_script.py
 python script_payout.py
-cp weights/pred/train.parameters searcher/payout.parameters
-cp weights/pred/train.weights searcher/payout.weights
+cp weights/pred2000/train.parameters searcher/payout.parameters
+cp weights/pred2000/train.weights searcher/payout.weights
 #########
 
 Step 5: run the proof search (hyp bonus should be set to 0.0 for consistency with the paper)
