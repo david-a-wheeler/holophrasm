@@ -110,7 +110,14 @@ I think this is purely a problem with the proof writing, but I'm not confident, 
 
 ## Training
 
-If you want to train from scratch, you can do the following.  I recommend having at least 64GB of RAM.
+If you want to train from scratch, you can do the following.  Daniel Whalen
+recommends having at least 64GB of RAM.
+
+Training is done against a particular mm file (currently the constant "set.mm",
+though in the future we want it to be more flexible).
+A number of the training steps below invoke
+meta_math_database defined in tree_parser.py, which reads the file
+as part of its processing.
 
 First, install the additional required libraries.
 On Debian/Ubuntu:
@@ -137,7 +144,7 @@ python script_pred.py
 
 Step 2: set up the files for the nn interface
 #########
-mkdir searcher
+mkdir -p searcher
 cp weights/gen2000/train.parameters searcher/gen.parameters
 cp weights/gen2000/train.weights searcher/gen.weights
 cp weights/pred2000/train.parameters searcher/pred.parameters
@@ -152,17 +159,20 @@ Step 3: save a copy of the language model somewhere by running
 python save_language_model.py
 #########
 
-Step 4: construct the payout data set and train the payout network
+This will report "included XXX tokens" and show
+"proposition: YYY" repeatedly as they are saved.
 
-Note: The last two steps are from the original instructions, but it's
-not clear they should be done.
+Step 4: construct the payout data set and train the payout network
 
 #########
 python generate_payout_data_script.py
 python script_payout.py
-cp weights/pred2000/train.parameters searcher/payout.parameters
-cp weights/pred2000/train.weights searcher/payout.weights
+cp weights/pred/train.parameters searcher/payout.parameters
+cp weights/pred/train.weights searcher/payout.weights
 #########
+
+We are now done with training.
+The following steps show how to use the trained data.
 
 Step 5: run the proof search (hyp bonus should be set to 0.0 for consistency with the paper)
 #########
@@ -171,6 +181,7 @@ python run_script_ordered.py
 
 Step 6: verify the proofs
 ######### PYTHON CODE
+python
 import write_proof
 write_proof.reset()
 write_proof.write_all_known_proofs()
