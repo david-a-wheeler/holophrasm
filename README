@@ -95,7 +95,7 @@ run_script_ordered.py will attempt to search for proofs for all the Metamath pro
 timeout: 5
 num_passes: 10000
 search beam width: 20
-hyp bonus: 0 
+hyp bonus: 0
 Proofs are saved to searcher/proofs as soon as they are found.  The proofs that I found during my search are in searcher/proofs_baseline.
 
 write_all_proofs.py will generate a modified_set.mm module file, which consists of the proofs from set.mm, with the found proofs replaced.  This can then be fed into Metamath and verified using the commands
@@ -127,69 +127,87 @@ sudo apt install python-cpuinfo python-matplotlib
 ~~~~
 
 Step 0: (OS X only) deal with Accelerate and forking bug
-#########
+
+~~~~
 export VECLIB_MAXIMUM_THREADS=1
-#########
+~~~~
 
 Step 1: train gen and pred
 
 Each of these scripts run indefinitely, trying to find a better
 training result for gen and pred respectively.  So run each for a while
-and then halt their execution.
+and then use a keyboard interrupt to halt their execution,
+preferably after the training rate decays to a sufficiently low value.
+All of these scripts may be run in parallel.
 
-#########
-python script_gen.py
-python script_pred.py
-#########
+
+~~~~
+python3 script_gen.py # Train the generative network
+python3 script_pred.py # Train the prediction network
+python3 save_language_model.py # Save a copy of the language model somewhere
+~~~~
 
 Step 2: set up the files for the nn interface
-#########
+
+~~~~
 mkdir -p searcher
 cp weights/gen2000/train.parameters searcher/gen.parameters
 cp weights/gen2000/train.weights searcher/gen.weights
 cp weights/pred2000/train.parameters searcher/pred.parameters
 cp weights/pred2000/train.weights searcher/pred.weights
-#########
+~~~~
 
-NOTE: this will fail because the searcher currently expects payout to
-already exist.  Fix that.
+TODO: Is the following still true?:
 
-Step 3: save a copy of the language model somewhere by running
-#########
-python save_language_model.py
-#########
+You also need to save a copy of the language model somewhere by running
+
+~~~~
+python3 save_language_model.py
+~~~~
+
+Step 3: construct the payout data set and train the payout network
+The first script takes days, but is highly parallelizable. Chunks may be run on
+different machines, and multiprocessing can be enabled by changing the
+"withpool.Pool(None)" to "withpool.Pool(n)", where n is the desired number of
+processes.
+WARNING: multiprocessing support may crash Windows machines.
 
 This will report "included XXX tokens" and show
 "proposition: YYY" repeatedly as they are saved.
 
 Step 4: construct the payout data set and train the payout network
 
-#########
-python generate_payout_data_script.py
-python script_payout.py
+~~~~
+python3 generate_payout_data_script.py
+python3 script_payout.py
 cp weights/pred/train.parameters searcher/payout.parameters
 cp weights/pred/train.weights searcher/payout.weights
-#########
+~~~~
 
 We are now done with training.
 The following steps show how to use the trained data.
 
 Step 5: run the proof search (hyp bonus should be set to 0.0 for consistency with the paper)
-#########
-python run_script_ordered.py
-#########
+The search will be much faster if you set "multi=True" in the searcher.run call, but this
+may break on Windows.
+
+~~~~
+python3 run_script_ordered.py
+~~~~
 
 Step 6: verify the proofs
-######### PYTHON CODE
-python
+
+~~~~
+python3
 import write_proof
 write_proof.reset()
 write_proof.write_all_known_proofs()
-#########
+~~~~
 
-Step 7: copy the modified_set.mm into the metamath folder and use the following commands to verify the proofs
-######### METAMATH COMMANDS
+Step 7: copy the modified_set.mm into the metamath folder and use the following metamath commands to verify the proofs
+
+~~~~
 ERASE
 READ modified_set.mm
 VERIFY PROOF *
-#########
+~~~~
