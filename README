@@ -29,20 +29,20 @@ Install system packages.  This must include Python2 (if not already installed), 
 If you're using Cygwin, you need to separately install pip (the Python2 package manager) by running:
 
 ~~~~
-python2 -m ensurepip
-pip2 install --upgrade pip
+python3 -m ensurepip
+pip3 install --upgrade pip
 ~~~~
 
 If you're using Debian/Ubuntu or similar, you need to separately install pip by running:
 
 ~~~~
-sudo apt install python-pip
+sudo apt install -y python3-pip
 ~~~~
 
 Now install the Python language dependencies (NumPy and iPython):
 
 ~~~~
-pip2 install numpy ipython
+pip3 install numpy ipython
 ~~~~
 
 ## Installation: Data files
@@ -87,8 +87,8 @@ Note that these data files total about 1134 MB (base-10).
 Then, from the root directory, using python 2.7, run
 
 ~~~~
-python2 run_script_ordered.py
-python2 write_all_proofs.py
+python3 run_script_ordered.py
+python3 write_all_proofs.py
 ~~~~
 
 run_script_ordered.py will attempt to search for proofs for all the Metamath propositions in the test set, starting with the (expected) easiest proofs first.  Reasonable parameters for running the script are:
@@ -123,7 +123,7 @@ First, install the additional required libraries.
 On Debian/Ubuntu:
 
 ~~~~
-sudo apt install python-cpuinfo python-matplotlib
+sudo apt install python3-cpuinfo python3-matplotlib
 ~~~~
 
 Step 0: (OS X only) deal with Accelerate and forking bug
@@ -140,7 +140,6 @@ and then use a keyboard interrupt to halt their execution,
 preferably after the training rate decays to a sufficiently low value.
 All of these scripts may be run in parallel.
 
-
 ~~~~
 python3 script_gen.py # Train the generative network
 python3 script_pred.py # Train the prediction network
@@ -155,14 +154,6 @@ cp weights/gen2000/train.parameters searcher/gen.parameters
 cp weights/gen2000/train.weights searcher/gen.weights
 cp weights/pred2000/train.parameters searcher/pred.parameters
 cp weights/pred2000/train.weights searcher/pred.weights
-~~~~
-
-TODO: Is the following still true?:
-
-You also need to save a copy of the language model somewhere by running
-
-~~~~
-python3 save_language_model.py
 ~~~~
 
 Step 3: construct the payout data set and train the payout network
